@@ -425,7 +425,7 @@ void CCalc2Dlg::CalcOperate(double m_value_two)
 
 void CCalc2Dlg::Fourbasicoperations(OperaterFlag Flag)
 {
-	CString str, str2, str_PrintResult, operate;
+	CString str, str2, str_PrintResult, strLength, operate;
 	int Lenght_Limit = 16;
 	int count;
 	double Print_Value;
@@ -473,11 +473,25 @@ void CCalc2Dlg::Fourbasicoperations(OperaterFlag Flag)
 
 	str_PrintResult.Format(L"%.*f", count, m_value);
 	
+	strLength = str_PrintResult;
+	strLength.Remove('.');
+
+	if (strLength.GetLength() <= Lenght_Limit)
+	{
+		str_PrintResult = Comma(str_PrintResult);
+		SetDlgItemText(Print_Result, str_PrintResult);
+	}
+	else
+	{
+		SetDlgItemText(Print_Result, exception);
+		SetDlgItemText(Print_History, exception);
+	}
+
 	//str_PrintResult.Format(L"%f",m_value);
 	//str_PrintResult.TrimRight(L"0");
     //str_PrintResult.TrimRight(L".");
-	str_PrintResult = Comma(str_PrintResult);
-	SetDlgItemText(Print_Result, str_PrintResult);
+	//str_PrintResult = Comma(str_PrintResult);
+	//SetDlgItemText(Print_Result, str_PrintResult);
 }
 
 CString CCalc2Dlg::SignCalc(CString str)
