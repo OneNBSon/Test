@@ -6,6 +6,8 @@
 #include "framework.h"
 #include "Calc2.h"
 #include "Calc2Dlg.h"
+#include<iostream>
+#include<string>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

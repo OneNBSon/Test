@@ -1,5 +1,7 @@
 ﻿  Calc2.cpp
   Calc2Dlg.cpp
-C:\Users\asus\Desktop\TestSW\HomeWork\Test\Calc2\Calc2\Calc2Dlg.cpp(396,15): warning C4244: '=': 'double'에서 'long'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\asus\Desktop\TestSW\Onenb\손종우\Test\Calc2\Calc2\Calc2Dlg.cpp(179,9): warning C4101: 'DisplayVlue' :참조되지 않은 지역 변수입니다.
+C:\Users\asus\Desktop\TestSW\Onenb\손종우\Test\Calc2\Calc2\Calc2Dlg.cpp(278,7): warning C4101: 'OverFlow' :참조되지 않은 지역 변수입니다.
+C:\Users\asus\Desktop\TestSW\Onenb\손종우\Test\Calc2\Calc2\Calc2Dlg.cpp(667,17): warning C4805: '==': 연산에 'BOOL' 형식과 'bool' 형식을 함께 사용하는 것은 안전하지 않습니다.
   코드를 생성하고 있습니다...
-  Calc2.vcxproj -> C:\Users\asus\Desktop\TestSW\HomeWork\Test\Calc2\Debug\Calc2.exe
+  Calc2.vcxproj -> C:\Users\asus\Desktop\TestSW\Onenb\손종우\Test\Calc2\Debug\Calc2.exe

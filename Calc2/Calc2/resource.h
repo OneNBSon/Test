@@ -17,15 +17,18 @@
 #define Btn_Number7                     1007
 #define Btn_Number8                     1008
 #define Btn_Number9                     1009
-#define Print_History                   1010
-#define Print_Result                    1011
-#define Btn_PLUS                        1012
-#define Btn_MINUS                       1013
-#define Btn_Result                      1014
-#define Btn_Clear                       1015
-#define Btn_BackSpace                   1016
-#define IDC_BUTTON1                     1017
-#define Btn_Sign                        1017
+#define Btn_POINT                       1010
+#define Print_History                   1011
+#define Print_Result                    1012
+#define Btn_PLUS                        1013
+#define Btn_MINUS                       1014
+#define Btn_Result                      1015
+#define Btn_Clear                       1016
+#define Btn_BackSpace                   1017
+#define IDC_BUTTON1                     1018
+#define Btn_Sign                        1018
+#define Btn_MULTYPL                     1019
+#define Btn_DIVID                       1020
 
 // Next default values for new objects
 // 

@@ -7,6 +7,11 @@
 #include "Calc2.h"
 #include "Calc2Dlg.h"
 #include "afxdialogex.h"
+#include<iostream>
+#include<string>
+#include "stdio.h"
+
+using namespace std;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -71,6 +76,9 @@ BEGIN_MESSAGE_MAP(CCalc2Dlg, CDialogEx)
 	ON_BN_CLICKED(Btn_Clear, &CCalc2Dlg::OnBnClickedClear)
 	ON_BN_CLICKED(Btn_BackSpace, &CCalc2Dlg::OnBnClickedBackspace)
 	ON_BN_CLICKED(Btn_Sign, &CCalc2Dlg::OnBnClickedSign)
+	ON_BN_CLICKED(Btn_MULTYPL, &CCalc2Dlg::OnBnClickedMultypl)
+	ON_BN_CLICKED(Btn_DIVID, &CCalc2Dlg::OnBnClickedDivid)
+	ON_BN_CLICKED(Btn_POINT, &CCalc2Dlg::OnBnClickedPoint)
 END_MESSAGE_MAP()
 
 
@@ -163,13 +171,15 @@ HCURSOR CCalc2Dlg::OnQueryDragIcon()
 
 BOOL CCalc2Dlg::OnCommand(WPARAM wParam, LPARAM lParam)
 {
-	CString str;
+	CString str, Integer, realnumber;
 	CString str_number;
 	CString str2;
+	CString intBuffer, doublebuffer, LengthCheck;
+	CString str3;
 	double DisplayVlue;
-	BOOL OverFlow;
+	int Lenght_Limit = 16;
 
-	if (Btn_Number0 <= wParam && wParam <= Btn_Number9)
+	if (Btn_Number0 <= wParam && wParam <= Btn_Number9)//(Btn_Number0 <= wParam && wParam <= Btn_POINT)
 	{
 		if (Overflow == TRUE)
 		{
@@ -178,19 +188,55 @@ BOOL CCalc2Dlg::OnCommand(WPARAM wParam, LPARAM lParam)
 		}
 		str_number.Format(L"%d", wParam - Btn_Number0);
 
+		/*if (wParam == Btn_POINT && PointUse == FALSE)
+		{
+			str_number.Format(L".");
+			PointUse = TRUE;
+		}
+		else if (wParam == Btn_POINT && PointUse == TRUE)
+		{
+			return CDialogEx::OnCommand(wParam, lParam);
+		}
+		else
+		{
+			str_number.Format(L"%d", wParam - Btn_Number0);
+		}*/
+
 		if (m_step == 0)
 		{
 			GetDlgItemText(Print_Result, str2);
+			str2.Remove(',');
 		}
 		else if (m_step == 1)
 		{
 			GetDlgItemText(Print_Result, str);
 			m_step = 0;
+			str.Remove(',');
 			m_value = _wtof(str);
 		}
-		DisplayVlue = _wtof(str2 + str_number);
 
+		if (str2.Find('.') != -1)
+		{
+			//AfxExtractSubString(Integer, str, 0, '.');
+			//AfxExtractSubString(realnumber, str, 1, '.');
+			//str = Integer;
+			//str2 =intBuffer + doublebuffer;
+			Lenght_Limit = 17;
+		}
+
+		if (str2.GetLength() < Lenght_Limit)
+		{
+			//SetDlgItemText(Print_Result, str2);
+			//SetDlgItemText(Print_Result, str2 + str_number
+			//Buffer = str2;
+			//Buffer.Remove('.');
+			str3 = Comma(str2 + str_number);
+			SetDlgItemText(Print_Result, str3);
+		}
+
+		/*DisplayVlue = _wtof(str2 + str_number);
 		OverFlow = ChckforOverFlow(DisplayVlue);
+
 		if (OverFlow == TRUE)
 		{
 			SetDlgItemText(Print_Result, str2 + str_number);
@@ -199,7 +245,7 @@ BOOL CCalc2Dlg::OnCommand(WPARAM wParam, LPARAM lParam)
 		{
 			Overflow = TRUE;
 			SetDlgItemText(Print_Result, exception);
-		}
+		}*/
 	}
 
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
@@ -210,7 +256,6 @@ BOOL CCalc2Dlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 void CCalc2Dlg::OnBnClickedButton11() //PLUS
 {
-	
 	Fourbasicoperations(PLUS);
 	LastOperate = LAST_PLUS;
 
@@ -227,16 +272,19 @@ void CCalc2Dlg::OnBnClickedButton12() //MINUS
 
 void CCalc2Dlg::OnBnClickedResult()
 {
-	CString str;
-	CString historystr;
-	CString BeforHistorystr;
+	CString str,str2;
+	CString historystr, BeforHistorystr;
+	CString Result;
 	BOOL OverFlow;
-	//double m_value_two = GetDlgItemInt(Print_Edit);
+	int Lenght_Limit = 16;
+	int count;
 	double Print_Value;
+
 	GetDlgItemText(Print_Result, str);
+	str.Remove(',');
 	Print_Value = _wtof(str);
 
-	//CEdit* pEdit2 = (CEdit*)GetDlgItem(Print_Edit2);
+	//CEdit* pEdit2 = (CEdit*)GetDlgItem(Print_Result);
 	//pEdit2->SetWindowTextW(L" ");
 
 	if (m_count >= 1)//LastOperate == LAST_NONE || 
@@ -249,15 +297,36 @@ void CCalc2Dlg::OnBnClickedResult()
 	if (LastOperate != LAST_Equal)
 	{
 		GetDlgItemText(Print_History, BeforHistorystr);
-		historystr.Format(L"%.0f", Print_Value);
+		
+		count = PointCountCheck(BeforHistorystr, str);
+
+		historystr.Format(L"%*f", count, Print_Value);
+		historystr.TrimRight(L"0");
+		historystr.TrimRight(L".");
 
 		SetDlgItemText(Print_History, BeforHistorystr + historystr + '=');
 
-		/*CEdit* pEdit2 = (CEdit*)GetDlgItem(Print_History);
-		pEdit2->SetWindowTextW(BeforHistorystr + historystr + '=');*/
+		//OverFlow = ChckforOverFlow(m_value);
 
-		OverFlow = ChckforOverFlow(m_value);
-		if (OverFlow == TRUE)
+		str.Format(L"%*f", count, m_value);
+		str.TrimRight(L"0");
+		str.TrimRight(L".");
+		if (str.Find('.') != -1)
+		{
+			Lenght_Limit = 17;
+		}
+
+		if (str.GetLength() < Lenght_Limit)
+		{
+			Result = Comma(str);
+			SetDlgItemText(Print_Result, Result);
+		}
+		else
+		{
+			SetDlgItemText(Print_Result, exception);
+		}
+
+		/*if (OverFlow == TRUE)
 		{
 			str.Format(L"%f", m_value);
 			str.TrimRight(L"0");
@@ -268,12 +337,8 @@ void CCalc2Dlg::OnBnClickedResult()
 		{
 			Overflow = TRUE;
 			SetDlgItemText(Print_Result, exception);
-		}
+		}*/
 
-		/*str.Format(L"%f", m_value);
-		str.TrimRight(L"0");
-		str.TrimRight(L".");
-		SetDlgItemText(Print_Result, str);*/
 	}
 
 	LastOperate = LAST_Equal;
@@ -301,6 +366,11 @@ void CCalc2Dlg::OnBnClickedBackspace()
 	GetDlgItemText(Print_Result, str);
 	//str.Remove(str.GetLength() - 1, 1);
 	str.Delete(str.GetLength() - 1, 1);
+	if (str.Find('.') == FALSE)
+	{
+		PointUse = FALSE;
+	}
+	str = Comma(str);
 	SetDlgItemText(Print_Result, str);
 }
 
@@ -326,40 +396,43 @@ void CCalc2Dlg::CalcOperate(double m_value_two)
 		m_value += m_value_two;
 		break;
 	case MINUS:
-		m_value -= m_value_two;
+		m_value = m_value - m_value_two;
 		break;
-	/*case MULTYPL:
+	case MULTYPL:
 		m_value *= m_value_two;
 		break;
 	case DIVID:
 		if (m_value_two != 0)
 		{
-			m_value / m_value_two;
+			m_value /= m_value_two;
 		}
 		else
 		{
 			m_value = 0;
 		}
 		break;
-		*/
+		
 	default:
 		break;
 	}
-	str.Format(L"%.0f", m_value);
+	str.Format(L"%.15f", m_value);
+	str.TrimRight(L"0");
+	str.TrimRight(L".");
 
 	SetDlgItemText(Print_Result, str);
 
-	//SetDlgItemInt(Print_Edit, m_value);
 }
 
 void CCalc2Dlg::Fourbasicoperations(OperaterFlag Flag)
 {
-	CString str, str2, omg, operate;
-
+	CString str, str2, str_PrintResult, operate;
+	int Lenght_Limit = 16;
+	int count;
 	double Print_Value;
-	GetDlgItemText(Print_Result, omg);
+	GetDlgItemText(Print_Result, str_PrintResult);
+	str_PrintResult.Remove(',');
 
-	Print_Value = _wtof(omg);
+	Print_Value = _wtof(str_PrintResult);
 
 	m_count++;
 
@@ -380,22 +453,49 @@ void CCalc2Dlg::Fourbasicoperations(OperaterFlag Flag)
 
 	operate = ConvertOperate(operater_flag);
 
+	//std::string a;
+	//char Test1[225];
+	//a = to_string(m_value);
+    //sprintf_s(Test1, "%.15lf",a, m_value);
+	
+	str2.Remove(',');
 	SetDlgItemText(Print_History, str2 + operate);
 
-	omg.Format(L"%f", m_value);
-	omg.TrimRight(L"0");
-	omg.TrimRight(L".");
-	SetDlgItemText(Print_Result, omg);
+	count = PointCountCheck(str, str2);
+	/*if (operater_flag == MULTYPL)
+	{
+		count++;
+	}
+	if (operater_flag == DIVID)
+	{
+		count--;
+	}*/
 
-
+	str_PrintResult.Format(L"%.*f", count, m_value);
+	
+	//str_PrintResult.Format(L"%f",m_value);
+	//str_PrintResult.TrimRight(L"0");
+    //str_PrintResult.TrimRight(L".");
+	str_PrintResult = Comma(str_PrintResult);
+	SetDlgItemText(Print_Result, str_PrintResult);
 }
 
 CString CCalc2Dlg::SignCalc(CString str)
 {
-	long Value;
-	Value = _wtof(str);
-	Value = Value * -1;
-	str.Format(L"%ld", Value);
+	CString Sign = L"-";
+
+	if (str.Find('-') != -1)
+	{
+		str.Remove('-');
+	}
+	else if(str.GetLength() == 0)
+	{
+		SetDlgItemText(Print_History, L"negate(0)");
+	}
+	else
+	{
+		str = Sign + str;
+	}
 
 	return str;
 }
@@ -406,7 +506,6 @@ void CCalc2Dlg::Clear()
 
 	SetDlgItemText(Print_Result, Clear);
 	SetDlgItemText(Print_History, Clear);
-
 	m_value = 0;
 	m_step = 0;
 	operater_flag = NONE;
@@ -431,12 +530,12 @@ CString CCalc2Dlg::ConvertOperate(OperaterFlag Operate)
 	case MINUS:
 		str = '-';
 		break;
-	/*case MULTYPL:
+	case MULTYPL:
 		str = '*';
 		break;
 	case DIVID:
 		str = '/';
-		break;*/
+		break;
 	default:
 		break;
 	}
@@ -446,6 +545,7 @@ CString CCalc2Dlg::ConvertOperate(OperaterFlag Operate)
 
 BOOL CCalc2Dlg::ChckforOverFlow(double Value)
 {
+	
 	if (INT_MIN < Value && Value <= INT_MAX)
 	{
 		return TRUE;
@@ -457,4 +557,127 @@ BOOL CCalc2Dlg::ChckforOverFlow(double Value)
 
 
 
+}
+CString CCalc2Dlg::Comma(CString nData)
+{
+	CString str, strReturn = L"";
+	CString Integer, realnumber;
+	CString Sign;
+	str = nData;
+	str.Remove(',');
+
+	if (str.GetLength() > 3)
+	{
+		CheckCharacter(str, Integer, realnumber, Sign);
+
+		for (int i = 0; i < str.GetLength(); i++)
+		{
+			if (nData.Find('.') != -1)
+			{
+				strReturn += Integer.GetAt(i);
+			}
+			else
+			{
+				strReturn += str.GetAt(i);
+			}
+			if ((str.GetLength() - i) > 2 && (str.GetLength() - i) % 3 == 1)
+			{
+				strReturn += ',';
+			}
+		}
+
+		if (nData.Find('.') != -1)
+		{
+			strReturn += ('.' + realnumber);
+			return Sign + strReturn;
+		}
+		else
+		{
+			return Sign + strReturn;
+		}
+	}
+	return str;
+}
+
+void CCalc2Dlg::OnBnClickedMultypl()
+{
+	Fourbasicoperations(MULTYPL);
+	LastOperate = LAST_MULTYPL;
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+
+void CCalc2Dlg::OnBnClickedDivid()
+{
+	Fourbasicoperations(DIVID);
+	LastOperate = LAST_DIVID;
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+
+void CCalc2Dlg::OnBnClickedPoint()
+{
+	CString str;
+	GetDlgItemText(Print_Result,str);
+	if (str.Find('.') == -1)
+	{		
+		SetDlgItemText(Print_Result, str + '.');
+	}
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+void CCalc2Dlg::CheckCharacter(CString& str, CString& Integer, CString& realnumber, CString& Sign)
+{
+	if (str.Find('-') != -1)
+	{
+		str.Remove('-');
+		Sign = L"-";
+	}
+
+	if (str.Find('.') != -1)
+	{
+		AfxExtractSubString(Integer, str, 0, '.');
+		AfxExtractSubString(realnumber, str, 1, '.');
+		str = Integer;
+	}
+
+}
+
+int CCalc2Dlg::PointCountCheck(CString txtHistory, CString txtResult)
+{
+	CString Text_History, Text_Result, realnumber, str;
+	int count = 0;
+	int StrLength;
+	BOOL Operate = false;
+	Text_History = txtHistory;
+	Text_Result = txtResult;
+
+	if (Text_History.GetLength() > Text_Result.GetLength())
+	{
+		str = Text_History;
+		Operate = true;
+	}
+	else
+	{
+		str = Text_Result;
+	}
+
+	if (str.GetLength() >15)
+	{
+
+	}
+	StrLength = str.GetLength();
+
+	if (Operate == true)
+	{
+		str.Delete(StrLength-1,1);
+	}
+
+	if (str.Find('.') != -1)
+	{
+		AfxExtractSubString(realnumber, str, 1, '.');
+	}
+	count = realnumber.GetLength();
+
+	return count;
 }

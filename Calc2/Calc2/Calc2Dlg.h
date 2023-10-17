@@ -1,6 +1,8 @@
 ﻿
 // Calc2Dlg.h: 헤더 파일
 //
+#include<iostream>
+#include<string>
 
 #pragma once
 
@@ -43,6 +45,7 @@ public:
 	double m_value = 0;
 	int m_count = 0;
 	bool Overflow = FALSE;
+	bool PointUse = FALSE;
 	CString exception = L"OverFlow";
 
 	//Func
@@ -52,6 +55,9 @@ public:
 	void Clear();
 	CString ConvertOperate(OperaterFlag Operate);
 	BOOL ChckforOverFlow(double Value);
+	CString Comma(CString Test);
+	void CheckCharacter(CString& D, CString& A, CString& B, CString& C);
+	int PointCountCheck(CString PrintHistory, CString PrintResult);
 
 // 생성입니다.
 public:
@@ -84,5 +90,8 @@ public:
 	afx_msg void OnBnClickedClear();
 	afx_msg void OnBnClickedBackspace();
 	afx_msg void OnBnClickedSign();
+	afx_msg void OnBnClickedMultypl();
+	afx_msg void OnBnClickedDivid();
+	afx_msg void OnBnClickedPoint();
 };
 
